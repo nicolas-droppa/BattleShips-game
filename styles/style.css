@@ -1,0 +1,52 @@
+@font-face {
+    font-family: 'Aexir';
+    src: url('fonts/Aexir-Free-Version-BF65ef18d2783f2.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+:root {
+    --color-white: #f3f3f3;
+
+    --color-background: #f8f7f7;
+    --color-background-complement: #f1f1f1;
+
+    --color-text: #151515;
+    --color-text-complement: #2e2e2e;
+
+    --color-primary: #e5e5eb;
+    --color-secondary: #cdcddb;
+}
+
+body {
+    background-color: var(--color-background);
+    font-family: 'Aexir', sans-serif;
+    color: var(--color-text);
+}
+
+h1 {
+    font-size: 3rem;
+}
+
+.boards {
+    position: relative;
+    display: flex;
+    gap: 5rem;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(10, 3rem);
+    grid-template-rows: repeat(10, 3rem);
+    gap: .25rem;
+}
+
+.cell {
+    background-color: red;
+    border-radius: .25rem;
+}
+
+.cell:hover {
+    outline: .1rem solid red;
+    cursor: pointer;
+}
