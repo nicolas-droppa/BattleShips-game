@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <title>Battleships</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+    <body>
+    <h1>Battleships ⚓</h1>
+
+    <!-- Menu -->
+    <div id="menu">
+        <h2>Choose difficulty</h2>
+        <button onclick="startGame('easy')">Easy</button>
+        <button onclick="startGame('medium')">Medium</button>
+        <button onclick="startGame('hard')">Hard</button>
+    </div>
+
+    <!-- GameBoard -->
+    <div id="game" style="display: none;">
+        <div class="boards">
+        <div>
+            <h2>Tvoje pole</h2>
+            <div id="player-board" class="board"></div>
+        </div>
+        <div>
+            <h2>AI pole</h2>
+            <div id="ai-board" class="board"></div>
+        </div>
+        </div>
+    </div>
+
+    <script src="scripts/gameHandler.js" type="module"></script>
+</body>
+</html>
