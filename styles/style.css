@@ -12,7 +12,8 @@
     --color-background-complement: #f1f1f1;
 
     --color-text: #151515;
-    --color-text-complement: #2e2e2e;
+    --color-text-complement: #3b3b3b;
+    --color-text-unimportant: #585858;
 
     --color-primary: #e5e5eb;
     --color-secondary: #cdcddb;
@@ -28,10 +29,58 @@ h1 {
     font-size: 3rem;
 }
 
+h3 {
+    font-size: 1rem;
+    color: var(--color-text-complement);
+}
+
+.game {
+    background-color: rgb(199, 255, 199);
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+}
+
+.panel {
+    position: relative;
+    display: column;
+    padding: 1rem;
+}
+
+.ships {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.ship {
+    display: flex;
+    flex-direction: row;
+}
+
+.ship-cell {
+    width: 2rem;
+    height: 2rem;
+    background-color: #4a90e2;
+    margin-right: .1rem;
+}
+
+.ship-cell:nth-child(1) {
+    border-top-left-radius: .2rem;
+    border-bottom-left-radius: .2rem;
+}
+
+.ship-cell:last-child {
+    border-top-right-radius: .2rem;
+    border-bottom-right-radius: .2rem;
+}
+
 .boards {
     position: relative;
     display: flex;
     gap: 5rem;
+    padding: 1rem;
 }
 
 .board {
