@@ -26,7 +26,7 @@ function startGame(difficulty) {
     createBoard("ai-board");
 
     enableBoardDrops("player-board");
-    
+
     createShips();
 }
 
@@ -107,31 +107,52 @@ function createShips() {
 function enableBoardDrops(boardId) {
     const board = document.getElementById(boardId);
 
-    board.querySelectorAll(".cell").forEach(cell => {
+    board.querySelectorAll(".cell").forEach((cell, index) => {
         cell.addEventListener("dragover", e => {
-            e.preventDefault(); // allow drop
+            e.preventDefault();
+            const size = parseInt(e.dataTransfer.getData("size"), 10);
+
+            const row = Math.floor(index / 10);
+            const col = index % 10;
+
+            clearPreview(board);
+
+            if (col + size <= 10) {
+                for (let i = 0; i < size; i++) {
+                    const idx = row * 10 + (col + i);
+                    board.children[idx].classList.add("preview");
+                }
+            }
+        });
+
+        cell.addEventListener("dragleave", () => {
+            clearPreview(board);
         });
 
         cell.addEventListener("drop", e => {
             e.preventDefault();
             const size = parseInt(e.dataTransfer.getData("size"), 10);
 
-            const startIndex = Array.from(board.children).indexOf(cell);
+            const row = Math.floor(index / 10);
+            const col = index % 10;
 
-            // Calculate row and col
-            const row = Math.floor(startIndex / 10);
-            const col = startIndex % 10;
+            clearPreview(board);
 
-            // Place ship horizontally (simple version)
             if (col + size <= 10) {
                 for (let i = 0; i < size; i++) {
                     const idx = row * 10 + (col + i);
-                    board.children[idx].style.backgroundColor = "#333";
+                    board.children[idx].classList.add("occupied");
                 }
             } else {
                 alert("Not enough space to place ship here!");
             }
         });
     });
+}
+
+function clearPreview(board) {
+    board.querySelectorAll(".preview").forEach(cell =>
+        cell.classList.remove("preview")
+    );
 }
 
