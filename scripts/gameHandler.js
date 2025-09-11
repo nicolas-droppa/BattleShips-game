@@ -101,7 +101,11 @@ function createShips() {
             draggingShip = ship;
             ship.classList.add("dragging");
             e.dataTransfer.setData("text/plain", ship.dataset.id);
-            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.effectAllowed = "move";
+            const emptyImg = new Image();
+            emptyImg.src =
+                "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='0' height='0'></svg>";
+            e.dataTransfer.setDragImage(emptyImg, 0, 0);
         });
 
         ship.addEventListener("dragend", () => {
