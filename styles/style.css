@@ -78,6 +78,11 @@ h3 {
     border-bottom-right-radius: .2rem;
 }
 
+.ship.vertical { flex-direction: column; }
+.ship.dragging { opacity: 0.6; }
+.cell.preview { background-color: rgba(0,150,255,0.35); }
+.cell.preview.invalid { background-color: rgba(255,80,80,0.55); }
+
 .boards {
     position: relative;
     display: flex;
