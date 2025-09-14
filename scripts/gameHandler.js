@@ -1,3 +1,4 @@
+import { boardRowTileCount, boardColumnTileCount, captains } from './constants.js';
 import { gameStarted } from './dev.js';
 
 let draggingShip = null;            // currently dragged ship element
