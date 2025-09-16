@@ -1,24 +1,20 @@
 import { boardRowTileCount, boardColumnTileCount, captains } from './constants.js';
 import { gameStarted } from './dev.js';
 
-let draggingShip = null;            // currently dragged ship element
-let lastHoverIndex = null;          // last hovered cell index while dragging
-let lastHoverValid = false;         // whether last hover placement was valid
-let playerBoard = null;             // reference to player board element
+let playerShips = Array(boardRowTileCount * boardColumnTileCount).fill(0); // 0=empty | 1=ship
+let aiShips = Array(boardRowTileCount * boardColumnTileCount).fill(0);     // 2=miss | 3=hit
+
+let draggingShip = null;
+let lastHoverIndex = null;
+let lastHoverValid = false;
+let playerBoard = null;
 
 document.addEventListener("DOMContentLoaded", () => {
     switch (gameStarted) {
-        case 1: 
-            startGame('easy'); 
-            break;
-        case 2: 
-            startGame('medium'); 
-            break;
-        case 3: 
-            startGame('hard'); 
-            break;
-        default:
-            break;
+        case 1: startGame('easy'); break;
+        case 2: startGame('medium'); break;
+        case 3: startGame('hard'); break;
+        default: break;
     }
 });
 
@@ -41,6 +37,8 @@ function startGame(difficulty) {
     playerBoard = document.getElementById("player-board");
 
     createShips();
+
+    placeAiShips();
 
     enableAttacks("ai-board");
 }
@@ -82,7 +80,7 @@ function createShips() {
         ship.dataset.id = `ship-${index}`;
         ship.dataset.orientation = "horizontal";
 
-        for (let i = 0; i < shipData.size; i++) { //ship cells
+        for (let i = 0; i < shipData.size; i++) {
             const c = document.createElement("div");
             c.classList.add("ship-cell");
             ship.appendChild(c);
@@ -101,14 +99,14 @@ function createShips() {
             toggleOrientation(ship);
         });
 
-        ship.style.touchAction = "none"; // prevent touch scrolling while dragging
+        ship.style.touchAction = "none";
 
         ship.addEventListener('pointerdown', (e) => {
             draggingShip = ship;
             ship.classList.add('dragging');
             ship.classList.toggle('vertical', ship.dataset.orientation === 'vertical');
 
-            try { ship.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+            try { ship.setPointerCapture(e.pointerId); } catch (err) {}
 
             document.addEventListener('pointermove', onPointerMove);
             document.addEventListener('pointerup', onPointerUp);
@@ -196,6 +194,10 @@ function onPointerUp(e) {
     cells.forEach(c => {
         c.classList.add('occupied');
         c.dataset.shipId = shipId;
+
+        const idx = parseInt(c.dataset.index, 10);
+        playerShips[idx] = 1;
+        
         const block = document.createElement('div');
         block.classList.add('placed-block');
         c.appendChild(block);
@@ -219,20 +221,20 @@ function computeTargetCells(board, startIndex, size, orientation) {
     if (orientation === 'horizontal') {
         if (col + size > 10) valid = false;
         for (let i = 0; i < size; i++) {
-        const idx = row * 10 + (col + i);
-        const c = board.children[idx];
-        if (!c) { valid = false; break; }
-        if (c.classList.contains('occupied')) valid = false;
-        cells.push(c);
+            const idx = row * 10 + (col + i);
+            const c = board.children[idx];
+            if (!c) { valid = false; break; }
+            if (c.classList.contains('occupied')) valid = false;
+            cells.push(c);
         }
-    } else { // vertical
+    } else {
         if (row + size > 10) valid = false;
         for (let i = 0; i < size; i++) {
-        const idx = (row + i) * 10 + col;
-        const c = board.children[idx];
-        if (!c) { valid = false; break; }
-        if (c.classList.contains('occupied')) valid = false;
-        cells.push(c);
+            const idx = (row + i) * 10 + col;
+            const c = board.children[idx];
+            if (!c) { valid = false; break; }
+            if (c.classList.contains('occupied')) valid = false;
+            cells.push(c);
         }
     }
 
@@ -265,16 +267,46 @@ function enableAttacks(boardId) {
         const cell = e.target.closest(".cell");
         if (!cell) return;
 
-        if (cell.classList.contains("attacked")) return;
+        const index = parseInt(cell.dataset.index, 10);
 
-        cell.classList.add("attacked");
+        if (aiShips[index] >= 2) return;
 
-        if (cell.classList.contains("occupied")) {
+        if (aiShips[index] === 1) {
+            aiShips[index] = 3; // hit
             cell.classList.add("hit");
-            console.log("HIT at", cell.dataset.row, cell.dataset.col);
+            console.log("HIT on AI at", index);
         } else {
+            aiShips[index] = 2; // miss
             cell.classList.add("miss");
-            console.log("MISS at", cell.dataset.row, cell.dataset.col);
+            console.log("MISS on AI at", index);
         }
+
+        setTimeout(aiShoot, 500);
     });
+}
+
+function aiShoot() {
+    let index;
+    do {
+        index = Math.floor(Math.random() * playerShips.length);
+    } while (playerShips[index] >= 2); // choose non attacked tile
+
+    const cell = document.querySelector(`#player-board .cell[data-index="${index}"]`);
+
+    if (playerShips[index] === 1) {
+        playerShips[index] = 3;
+        cell.classList.add("hit");
+        console.log("AI HIT at", index);
+    } else {
+        playerShips[index] = 2;
+        cell.classList.add("miss");
+        console.log("AI MISS at", index);
+    }
+}
+
+function placeAiShips() { // now placing only carrier
+    for (let i = 0; i < 5; i++) {
+        aiShips[i] = 1;
+        document.querySelector(`#ai-board .cell[data-index="${i}"]`).classList.add("occupied");
+    }
 }
