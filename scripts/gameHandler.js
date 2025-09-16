@@ -41,6 +41,8 @@ function startGame(difficulty) {
     playerBoard = document.getElementById("player-board");
 
     createShips();
+
+    enableAttacks("ai-board");
 }
 
 function createBoard(boardId) {
@@ -254,5 +256,25 @@ function updatePreviewFromIndex(board, startIndex, ship) {
 function clearPreview(board) {
     board.querySelectorAll(".preview").forEach(cell => {
         cell.classList.remove("preview", "invalid");
+    });
+}
+
+function enableAttacks(boardId) {
+    const board = document.getElementById(boardId);
+    board.addEventListener("click", (e) => {
+        const cell = e.target.closest(".cell");
+        if (!cell) return;
+
+        if (cell.classList.contains("attacked")) return;
+
+        cell.classList.add("attacked");
+
+        if (cell.classList.contains("occupied")) {
+            cell.classList.add("hit");
+            console.log("HIT at", cell.dataset.row, cell.dataset.col);
+        } else {
+            cell.classList.add("miss");
+            console.log("MISS at", cell.dataset.row, cell.dataset.col);
+        }
     });
 }

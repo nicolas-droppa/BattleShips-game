@@ -114,3 +114,13 @@ h3 {
 .cell.occupied {
     background-color: #333;
 }
+
+.cell.attacked {
+    cursor: not-allowed;
+}
+.cell.hit {
+    background-color: red !important;
+}
+.cell.miss {
+    background-color: lightblue !important;
+}
