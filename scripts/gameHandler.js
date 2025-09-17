@@ -94,10 +94,11 @@ function createShips() {
         wrapper.appendChild(label);
         shipsPanel.appendChild(wrapper);
 
-        ship.addEventListener('click', (ev) => {
+        /*ship.addEventListener('click', (ev) => {
             ev.preventDefault();
             toggleOrientation(ship);
         });
+        Rotate ship by clicking on it*/
 
         ship.style.touchAction = "none";
 
