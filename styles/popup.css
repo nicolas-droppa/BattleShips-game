@@ -20,23 +20,47 @@
     z-index: 100;
     bottom: 5rem;
     right: 2rem;
-    background: rgba(35, 35, 35, 0.3);
+    background: rgba(35, 35, 35, 0.9);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     border-radius: 10px;
     padding: 1rem;
-    width: 20rem;
+    width: 26rem;
     height: auto;
     overflow: hidden;
 }
 
 #popupBody {
     position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+#popupBodyButtons {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 2rem;
+}
+
+#popupBodyInfo {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+}
+
+#popupIconContainer {
+    width: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #popupBg h2 {
     color: var(--color-white);
     font-size: 1rem;
+    margin: 0;
 }
 
 #popupText {
@@ -50,20 +74,24 @@
     border: none;
     padding: 0;
     margin: 0;
-    color: inherit;
+    color: var(--color-text-unimportant);
     font: inherit;
     cursor: pointer;
-    top: 0;
-    right: 0;
+    top: -.5rem;
+    right: -.5rem;
 }
 
 #popupColor {
     position: absolute;
-    top: -2rem;
-    left: -5rem;
-    background: rgba(77, 255, 83, 0.3);
-    filter: blur(16px);
-    width: 10rem;
-    height: 10rem;
+    top: -10rem;
+    left: -10rem;
+    background: rgba(77, 255, 83, 0.1);
+    filter: blur(20px);
+    width: 20rem;
+    height: 20rem;
     border-radius: 50%;
+}
+
+#popupIcon {
+
 }

@@ -13,14 +13,22 @@
     <!-- Popup notifications -->
     <div id="popupBg">
         <div id="popupBody">
-            <h2>Popup title</h2>
-            <p id="popupText">Popup text</p>
-            <p id="popupIcon">O</p>
-            <p id="popupColor"></p>
+            <div id="popupBodyInfo">
+                <div id="popupIconContainer">
+                    <p id="popupIcon">O</p>
+                </div>
+                <div id="popupTextContainer">
+                    <h2>Popup title</h2>
+                    <p id="popupText">Popup text</p>
+                    <div id="popupBodyButtons">
+                        <button id="cancelButton">Cancel</button>
+                        <button id="doneButton">Done</button>
+                    </div>
+                </div>
+            </div>
             <button id="closeButtonX">X</button>
-            <button id="cancelButton">Cancel</button>
-            <button id="doneButton">Done</button>
         </div>
+        <p id="popupColor"></p>
     </div>
 
     <!-- Menu -->
