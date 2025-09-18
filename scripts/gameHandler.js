@@ -1,8 +1,8 @@
 import { boardRowTileCount, boardColumnTileCount, captains } from './constants.js';
 import { gameStarted } from './dev.js';
 
-let playerShips = Array(boardRowTileCount * boardColumnTileCount).fill(0); // 0=empty | 1=ship
-let aiShips = Array(boardRowTileCount * boardColumnTileCount).fill(0);     // 2=miss | 3=hit
+let playerShips = Array(boardRowTileCount * boardColumnTileCount).fill(0); // 0 = empty | 1 = ship
+let aiShips = Array(boardRowTileCount * boardColumnTileCount).fill(0); // 2 = miss | 3 = hit
 
 let draggingShip = null;
 let lastHoverIndex = null;
@@ -11,10 +11,17 @@ let playerBoard = null;
 
 document.addEventListener("DOMContentLoaded", () => {
     switch (gameStarted) {
-        case 1: startGame('easy'); break;
-        case 2: startGame('medium'); break;
-        case 3: startGame('hard'); break;
-        default: break;
+        case 1: 
+            startGame('easy'); 
+            break;
+        case 2: 
+            startGame('medium'); 
+            break;
+        case 3: 
+            startGame('hard'); 
+            break;
+        default:
+            break;
     }
 });
 
@@ -36,11 +43,7 @@ function startGame(difficulty) {
 
     playerBoard = document.getElementById("player-board");
 
-    createShips();
-
-    placeAiShips();
-
-    enableAttacks("ai-board");
+    setupShipPlacement();
 }
 
 function createBoard(boardId) {
@@ -57,7 +60,7 @@ function createBoard(boardId) {
     }
 }
 
-function createShips() {
+function setupShipPlacement() {
     const shipsPanel = document.querySelector(".ships");
     shipsPanel.innerHTML = "";
 
@@ -93,13 +96,7 @@ function createShips() {
         wrapper.appendChild(ship);
         wrapper.appendChild(label);
         shipsPanel.appendChild(wrapper);
-
-        /*ship.addEventListener('click', (ev) => {
-            ev.preventDefault();
-            toggleOrientation(ship);
-        });
-        Rotate ship by clicking on it*/
-
+        
         ship.style.touchAction = "none";
 
         ship.addEventListener('pointerdown', (e) => {
@@ -117,6 +114,25 @@ function createShips() {
             updateOrientationIndicator(ship.dataset.orientation);
         });
     });
+
+    const confirmBtn = document.createElement("button");
+    confirmBtn.textContent = "Confirm Placement";
+    confirmBtn.addEventListener("click", () => {
+        finishShipPlacement();
+    });
+    shipsPanel.appendChild(confirmBtn);
+}
+
+function finishShipPlacement() {
+    document.querySelectorAll(".ship").forEach(ship => {
+        ship.remove();
+    });
+
+    draggingShip = null;
+    lastHoverIndex = null;
+    lastHoverValid = false;
+
+    enableAttacks("ai-board");
 }
 
 function toggleOrientation(ship) {
@@ -195,10 +211,6 @@ function onPointerUp(e) {
     cells.forEach(c => {
         c.classList.add('occupied');
         c.dataset.shipId = shipId;
-
-        const idx = parseInt(c.dataset.index, 10);
-        playerShips[idx] = 1;
-        
         const block = document.createElement('div');
         block.classList.add('placed-block');
         c.appendChild(block);
@@ -268,46 +280,16 @@ function enableAttacks(boardId) {
         const cell = e.target.closest(".cell");
         if (!cell) return;
 
-        const index = parseInt(cell.dataset.index, 10);
+        if (cell.classList.contains("attacked")) return;
 
-        if (aiShips[index] >= 2) return;
+        cell.classList.add("attacked");
 
-        if (aiShips[index] === 1) {
-            aiShips[index] = 3; // hit
+        if (cell.classList.contains("occupied")) {
             cell.classList.add("hit");
-            console.log("HIT on AI at", index);
+            console.log("HIT at", cell.dataset.row, cell.dataset.col);
         } else {
-            aiShips[index] = 2; // miss
             cell.classList.add("miss");
-            console.log("MISS on AI at", index);
+            console.log("MISS at", cell.dataset.row, cell.dataset.col);
         }
-
-        setTimeout(aiShoot, 500);
     });
-}
-
-function aiShoot() {
-    let index;
-    do {
-        index = Math.floor(Math.random() * playerShips.length);
-    } while (playerShips[index] >= 2); // choose non attacked tile
-
-    const cell = document.querySelector(`#player-board .cell[data-index="${index}"]`);
-
-    if (playerShips[index] === 1) {
-        playerShips[index] = 3;
-        cell.classList.add("hit");
-        console.log("AI HIT at", index);
-    } else {
-        playerShips[index] = 2;
-        cell.classList.add("miss");
-        console.log("AI MISS at", index);
-    }
-}
-
-function placeAiShips() { // now placing only carrier
-    for (let i = 0; i < 5; i++) {
-        aiShips[i] = 1;
-        document.querySelector(`#ai-board .cell[data-index="${i}"]`).classList.add("occupied");
-    }
 }
